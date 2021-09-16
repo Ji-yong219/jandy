@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>내 계정</title>
+	<link rel="icon" href="{{url_for('static', filename='css/image/icon.png')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/account.css')}}">
+	<script type="text/javascript" src = "{{url_for('static',filename='js/account.js')}}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+		var user_ok = '{{user_ok}}';
+		var user_id = '{{user_id}}';
+		var user_nick = '{{nick}}';
+		var user_name = '{{name}}';
+		var img = '{{img}}';
+	</script>
+</head>
+<body>
+	<div id='logo' onclick=window.open('/','_self')></div>
+	
+	<div id='content'>
+	<article>
+		<div id='user_ok_no'>
+			<form action="/account" method="POST" onsubmit='return chk_pw()'>
+				
+				<h2>보안을 위해 비밀번호를 한번 더 입력해주세요.</h2>	
+				<input type="password" id="pw" name="pw" maxlength="50">
+				<br/>
+	
+				<input type="submit" id="submit" value="확인">
+			</form>
+		</div>
+
+		<div id='user_ok_yes'>
+			<form action="/account" method="POST" enctype="multipart/form-data" onsubmit='return chk_account()'>
+				<table  id="account">
+					<tr>
+						<td class="fir_col">프로필 사진</td>
+						<!--<td ondrop="drop(event,this)" ondragover="allow_drop(event)">-->
+						<td><img src="{{url_for('static',filename='user_img/profileimage.png')}}" id="view_preview"></td>
+						<td>
+						<input accept="image/*" type="file" name="file_sin_db""/></td>
+					</tr>
+					<tr>
+						<td class="fir_col">아이디</td>
+						<td id="id"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="fir_col">비밀번호</td>
+						<td>입력<input id='ch_pw' name='ch_pw' type='password'></td>
+						<td>재확인<input id='ch_pwa' type="password"></td>
+					</tr>
+					<tr>
+						<td class="fir_col">이름</td>
+						<td>입력<input id='name' name='name' type='text'></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="fir_col">닉네임</td>
+						<td>입력<input id='nick' name='nick' type='text'></td>
+						<td></td>
+					</tr>
+				</table>
+				<script>chk_account()</script>
+				<span id="error"></span>
+				<input type="submit" value="변경">
+			</form>
+		</div>
+		<script>account_ok(user_ok);account_show();</script>
+
+	</article>
+	</div>
+
+	<div id='under_bar'>
+		<div id='logo_bot' onclick=window.open('/','_self')></div>
+		<span id="text_bot">copyright ⓒ Ji-Yong Park & Yoon su Lim All Right Reserved</span>
+	</div>	
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+	<meta http-equiv="refresh" content="3600";>
+    <meta charset="utf-8">
+    <title>weather</title>
+    <script src = "{{url_for('static',filename='js/index.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <style>
+    .ticker {
+      width:210px;
+      height: 20px;
+      overflow: hidden;
+      list-style: none;
+      -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;
+    }
+    .ticker li{
+      width: 300px;
+      margin-left:-100px;
+      user-select: none;
+      font-weight: bold;
+      margin-top: 0px;
+      font-family: TmonMonsori, "맑은 고딕";
+      font-size: 14px;
+      text-align: right;
+    }
+    </style>
+  </head>
+  <body>
+      <div id="ticker_01" class="ticker">
+        <li>{{weather_txt[0]}}</li>
+        <li>{{weather_txt[1]}}</li>
+        <li>{{weather_txt[2]}}</li>
+      </div>
+
+  </body>
+</html>

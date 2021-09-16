@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Jandy 회원가입</title>
+	<link rel="icon" href="{{url_for('static', filename='css/image/icon.png')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/regist.css')}}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+	<div id='logo' onclick=window.open('/','_self')></div>
+	
+	<div id='content'>
+	<article>
+
+		<form action="/regist" method="POST" onsubmit = 'return (idchk() && pwchk() && pwachk() && namechk() && nickchk())'>
+	
+			<h3>아이디</h3>
+			<input type="text" id="id" name="id" maxlength="50" onchange=idchk()>
+			<span id="error_id"></span>
+			<br/>
+	
+			<h3>비밀번호</h3>
+			<input type="password" id="pw" name="pw" maxlength="50" onchange=pwchk()>
+			<span id="error_pw" style="color:red"></span>
+			<br/>
+	
+			<h3>비밀번호 재확인</h3>
+			<input type="password" id="pwa" name="pwa" maxlength="50" onchange=pwachk()>
+			<span id="error_pwa" style="color:red"></span>
+			<br/>
+
+			<h3>이름</h3>
+			<input type="text" id="name" name="name" maxlength="50" onchange=namechk()>
+			<span id="error_name" style="color:red"></span>
+			<br/>
+	
+			<h3>닉네임</h3>
+			<input type="text" id="nick" name="nick" maxlength="10" onchange=nickchk()>
+			<span id="error_nick" style="color:red"></span>
+			<br/>
+	
+			<input type="submit" id="submit" value="가입하기">
+		</form>
+	</article>
+	</div>
+
+	<div id='under_bar'>
+		<div id='logo_bot' onclick=window.open('/','_self')></div>
+		<span id="text_bot">copyright ⓒ Ji-Yong Park & Yoon su Lim All Right Reserved</span>
+	</div>
+
+		<script type = "text/javascript">
+        
+			function idchk(){
+                var check = document.getElementById("error_id").innerHTML;
+                
+                $(function(){
+                    //$('#id').keyup(function(){
+                    var input_id = $('#id').val();
+                    
+                    $.ajax({
+                        type : 'POST',
+                        url : '/idchk',
+                        dataType:'json',
+                        data : {input_id:input_id},
+                        success:function(json){
+                            request = json.sql_result
+                            
+                            if (request=='1'){
+                                document.getElementById("error_id").innerHTML='이미 존재하는 ID입니다.';
+                            }
+                            else if(request=='0'){
+                                document.getElementById("error_id").innerHTML='사용 가능한 ID입니다.';
+                            }
+                            else if(request=='2'){
+                                document.getElementById("error_id").innerHTML='6자 이상 입력해주세요.';
+                            }
+                            return false;	
+                        }
+                    })
+                    //})
+                })
+                if(check=='사용 가능한 ID입니다.'){
+                    return true;
+                }else{
+                    return false;
+                }
+			}
+
+			function pwchk(){
+				var pw = document.getElementById("pw").value;
+				if (pw.length<6){
+					document.getElementById('error_pw').innerHTML='비밀번호는 6자리 이상으로 설정해주세요.';
+					return false;
+				}
+				else{
+					document.getElementById('error_pw').innerHTML='';
+					return true;
+				}
+			}
+
+			function pwachk(){
+				var pw = document.getElementById("pw").value;
+				var pwa = document.getElementById("pwa").value;
+
+				if (pw!=pwa){
+					document.getElementById('error_pwa').innerHTML='비밀번호가 일치하지 않습니다. 다시 입력해주세요.';
+					return false;
+				}
+				else{
+					document.getElementById('error_pwa').innerHTML='';
+					return true;
+				}
+			}
+			function namechk(){
+				var name = document.getElementById("name").value;
+				if(name==''){
+					document.getElementById('error_name').innerHTML='이름을 입력해주세요.';
+					return false;
+				}
+				else{
+					document.getElementById('error_name').innerHTML='';
+					return true;
+				}
+			}
+			function nickchk(){
+				var nick = document.getElementById("nick").value;
+				if(nick.length<2){
+					document.getElementById('error_nick').innerHTML='2자 이상 입력해주세요.';
+					return false;
+				}
+				else{
+					document.getElementById('error_nick').innerHTML='';
+					return true;
+				}
+			}
+		</script>	
+</body>
+</html>

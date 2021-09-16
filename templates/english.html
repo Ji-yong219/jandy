@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      .enbox{
+        <!--width:310px;
+        height:220px;-->
+        border: 1px solid #d8d8d8;
+        background-color: #ffffff;
+      }
+      span{
+        font-weight: bold;
+        font-family: TmonMonsori, "맑은고딕";
+        font-size: 16px;
+      }
+      #english{
+        font-size: 18px;
+        color: #252525;
+        font-weight: bold;
+        font-family: TmonMonsori, "Arial";
+      }
+      #mean{
+        font-size: 12px;
+        color: #252525;
+      }
+    </style>
+  </head>
+  <body>
+    <table class = "enbox">
+      <tr>
+        <td colspan="2"> <span>오늘의 영단어</span></td>
+      </tr>
+      <tr>
+        <td id="english">{{today_english_txt[0]}}</td>
+        <td id="english">{{today_english_txt[1]}}</td>
+      </tr>
+      <tr>
+        <td id="mean">{{today_english_mean_txt[0]}}</td>
+        <td id="mean">{{today_english_mean_txt[1]}}</td>
+      </tr>
+      <tr>
+        <td id="english">{{today_english_txt[2]}}</td>
+        <td id="english">{{today_english_txt[3]}}</td>
+      </tr>
+      <tr>
+        <td id="mean">{{today_english_mean_txt[2]}}</td>
+        <td id="mean">{{today_english_mean_txt[3]}}</td>
+      </tr>
+
+    </table>
+  </body>
+</html>

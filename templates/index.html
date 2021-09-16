@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--<meta http-equiv="refresh" content="0; url=/" >-->
+	<meta charset="utf-8">
+	<title>JANDY</title>
+	<link rel="icon" href="{{ url_for('static', filename='css/image/icon.png') }}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jandy_index.css')}}">
+	<script type="text/javascript" src = "{{url_for('static',filename='js/index.js')}}"></script>
+	<script src="//code.jquery.com/jquery.min.js"></script>
+	<script>
+		var session_stat = '{{session_stat}}';
+		var img = '{{img}}';
+		$(document).ready(function() {logbox(session_stat);});
+		$( document ).ready( function() {
+		$( '#english_txt' ).load('/english')
+		$( '#news_txt' ).load('/news')
+		$( '#tw_txt' ).load('/time_weather')
+		$( '#w_txt' ).load('/weather')} );
+	</script>
+</head>
+  <body>
+	<div id="header">
+		<div id="smallheader">
+      <div id="header_top"><a href="/">잔디를 시작페이지로</a></div>
+      <a href="/"><div class="logo"></div> </a>
+			<form method=get action="http://www.google.co.kr/search" target="_blank">
+	        <input id="search" type=text name=q size=25 maxlength=255>
+			</form>
+			<table id ="menu" width="690px">
+				<tr>
+				<td><a href="/cafe" target="_blank">카페</a></td>
+				<td><a href="http://facebook.com" target="_blank">페이스북</a></td>
+				<td><a href="http://youtube.com" target="_blank">유튜브</a></td>
+				<td><a href="https://www.google.co.kr/maps/@45.2000678,17.2800773,5z?hl=ko" target="_blank">지도</a></td>
+				<td><a href="https://newsstand.naver.com/?list=&pcode=056" target="_blank">뉴스</a></td>
+				<td><a href="https://movie.naver.com/movie/running/current.nhn" target="_blank">영화</a></td>
+				<td><a href="http://www.genie.co.kr/" target="_blank">뮤직</a></td>
+				<td><a href="#" target="_blank">웹툰</a></td>
+				<td><a href="#" target="_blank">블로그</a></td>
+				<td><a href="https://www.aladin.co.kr" target="_blank">책</a></td>
+				<td><a href="#" target="_blank">버스</a></td>
+				<td><a href="/install">M & M</a></td>
+				<td><a href="/cube" target="_self">큐브</a></td>
+				</tr>
+			</table>
+        <button id="more1" style="cursor:pointer" onclick=weatherclick1() type="button" name="more">∨</button>
+		<button id="more2" style="cursor:pointer" onclick=weatherclick2() type="button" name="more">∧</button>
+		<span id="w_txt"></span>
+			
+		</div><!--smallheader-->
+		
+	</div><!--heaader-->
+	<div id="smallbody">
+		<div id="article_left">
+			<div id="main_ad">
+			</div>
+			<div id="news_txt">
+			</div>
+		</div>
+		<div id="article_right">
+			<div id="login_form">
+			<form action="/login" method = "POST" onsubmit="return pw_chk()">
+				<input style="position: relative; top:10px; left:6px;" type="checkbox" name="아이디저장" value="submit">
+				<p id="idstate">항상 로그인</p>
+			        <input style="position: relative; top:-25px; left:10px;" id="idbox" type="text" name="user_id" placeholder="아이디">
+			        <input style="position: relative; top:-35px; left:10px;" id="pwbox" type="password" name="user_pw" placeholder="비밀번호" keyup='pw_chk()'>
+				<input id="login_button" type="submit" value="로그인">
+				<a id="regist" href="/regist">회원가입</a>
+				<a id="find_account" href="/findid">아이디·비밀번호 찾기</a>
+			</form>
+			</div>
+			<div id="logout_form">
+				<form action="/" method = "POST">
+					<!--<div id="profile"></div>-->
+					<img id="profile" src="/static/user_img/profileimage.png">
+					<span id="nickname" onclick='window.open("/account","_self")'>{{nickname}}님</span>
+					<span onclick="window.open('/cafe')" id="write">글쓰기</span>
+					<span onclick="window.open('/account','_self')" id="account">내정보</span>
+					<input id="logout_button" type="submit" value="로그아웃">
+				</form>
+			</div>
+
+			<div id="english_txt">
+
+			</div>
+			<div id="time_weather">
+				<div id="tw_txt"></div>
+			</div>
+		</div>
+	</div> <!-- smallbody end -->
+
+  </body>
+</html>

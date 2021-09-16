@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+ 	<meta http-equiv="refresh" content="3600";>
+    <meta charset="utf-8">
+    <style>
+      .news_box{
+        width:530px;
+        height: 220px;
+        display: inline-block;
+        border: 1px solid #d8d8d8;
+        background-color: #ffffff;
+        font-size: 12px;
+      }
+      .news_box table{
+        display: inline-block;
+        margin:auto;
+      }
+      #news_form{
+        display: inline-block;
+      	float: right;
+      	width:140px;
+      	height:220px;
+      	background-color:#ffffff;
+      	border: 1px solid #d8d8d8;
+      }
+      #news_form p{
+      	margin-left: 19px;
+      	font-family:"맑은 고딕";
+      	font-weight: bold;
+      	font-size: 13px;
+      	color: #008aff;
+      }
+      li{
+        margin-left: -20px;
+        font-family: TmonMonsori, "맑은 고딕";
+        font-size: 11px;
+        list-style: none;
+        text-align: left;
+        width:160px;
+        height: 17px;
+      }
+      li a{
+        text-decoration: none;
+        color: #252525;
+      }
+      li a:hover{
+        text-decoration: underline;
+        color: #008aff;
+        font-weight: bold;
+      }
+      td a{
+        text-decoration: none;
+        color: #252525;
+      }
+      td a:hover{
+        text-decoration: underline;
+        color: #008aff;
+      }
+      .ytn_logo{
+        top:0;
+        display: inline-block;
+        width:170px;
+        height:100px;
+        background-repeat:no-repeat;
+      	background-image: url('./static/css/image/ytnlogo.png');
+      	background-size: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <div class = "news_box">
+      <a href="https://www.ytn.co.kr/"><div class = "ytn_logo"></div> </a>
+      <table>
+        <tr>
+          <td><a href={{ytn_news_txt_url[0]}}>{{ytn_news_txt[0]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[1]}}>{{ytn_news_txt[1]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[2]}}>{{ytn_news_txt[2]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[3]}}>{{ytn_news_txt[3]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[4]}}>{{ytn_news_txt[4]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[5]}}>{{ytn_news_txt[5]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[6]}}>{{ytn_news_txt[6]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[7]}}>{{ytn_news_txt[7]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[8]}}>{{ytn_news_txt[8]}}</a></td>
+        </tr>
+        <tr>
+          <td><a href={{ytn_news_txt_url[9]}}>{{ytn_news_txt[9]}}</a></td>
+        </tr>
+      </table>
+    </div>
+    <div id = "news_form">
+        <p>실시간 뉴스 토픽</p>
+        <ul>
+          <li><a href="#" style="color: #008aff; font-weight: bold;">1 {{time_news_txt[0]}}</a></li>
+          <li><a href="#">2 {{time_news_txt[1]}}</a></li>
+          <li><a href="#">3 {{time_news_txt[2]}}</a></li>
+          <li><a href="#">4 {{time_news_txt[3]}}</a></li>
+          <li><a href="#">5 {{time_news_txt[4]}}</a></li>
+          <li><a href="#">6 {{time_news_txt[5]}}</a></li>
+          <li><a href="#">7 {{time_news_txt[6]}}</a></li>
+          <li><a href="#">8 {{time_news_txt[7]}}</a></li>
+          <li><a href="#">9 {{time_news_txt[8]}}</a></li>
+          <li><a href="#">10 {{time_news_txt[9]}}</a></li>
+        </ul>
+    </div>
+
+    
+  </body>
+</html>

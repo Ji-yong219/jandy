@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+	<meta http-equiv="refresh" content="3600";>
+    <meta charset="utf-8">
+    <title>weather</title>
+    <style>
+      .tw_box{
+        width:1030px;
+        height:630px;
+        background-color:#ffffff;
+        border: solid 1px #d0d0d0;
+      }
+      #time{
+        width:980px;
+        height: 400px;
+        color: #3d3d3d;
+      	font-family: TmonMonsori, "맑은고딕";
+      	font-size: 13px;
+        position: relative; top:-130px; left:13px;
+        margin-top: 0px;
+      }
+      #nowtime{
+        color:white ;
+	background-color: #4a8fea;
+      }
+      #circle1 {
+       width: 50px;
+       height: 25px;
+       background: #12bb05;
+       border-radius: 50px / 50px;
+       position: relative; top:-113px; left:307px;
+      }
+      #circle2 {
+       width: 50px;
+       height: 25px;
+       background: #12bb05;
+       border-radius: 50px / 50px;
+       position: relative; top:-38px; left:307px;
+      }
+      #circle3 {
+       width: 50px;
+       height: 25px;
+       background: #12bb05;
+       border-radius: 50px / 50px;
+       position: relative; top:37px; left:307px;
+      }
+      #circle4 {
+       width: 50px;
+       height: 25px;
+       background: #12bb05;
+       border-radius: 50px / 50px;
+       position: relative; top:112px; left:307px;
+      }
+      #menu1 {
+        width: 300px;
+        height: 50px;
+        position: relative; top:-150px;
+        background-color:#366cd0;
+      }
+      #menu1:before {
+        content: "";
+        position: absolute;
+        right: -50px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 50px solid #366cd0;
+        border-top: 25px solid transparent;
+        border-bottom:25px solid transparent;
+      }
+      #menu2 {
+        width: 270px;
+        height: 50px;
+        position: relative; top: -100px; left:250px;
+        background-color:#4076da;
+        margin-left: 50px;
+      }
+      #menu2:before {
+        content: "";
+        position: absolute;
+        right: -50px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 50px solid #4076da;
+        border-top: 25px solid transparent;
+        border-bottom: 25px solid transparent;
+      }
+      #menu3 {
+        width: 200px;
+        height: 50px;
+        position: relative;
+        background-color:#4d83e7;
+        position: relative; top: -50px; left:570px;
+      }
+      #menu3:before {
+        content: "";
+        position: absolute;
+        right: -50px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 50px solid #4d83e7;
+        border-top: 25px solid transparent;
+        border-bottom: 25px solid transparent;
+      }
+      #menu4 {
+        width: 278px;
+        height: 50px;
+        position: relative;
+        background-color:#4a8fea;
+        position: relative; top: 0px; left:752px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tw_box">
+      <div id="menu4"></div>
+      <div id="menu3"></div>
+      <div id="menu2"></div>
+      <div id="menu1"></div>
+      <table id = "time" >
+        <tr>
+          <th rowspan="2">오창</th>
+          <th>{{w_ochang[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_ochang[1]}}</th>
+          </div>
+          <th>{{w_ochang[2]}}</th>
+          <th>{{w_ochang[3]}}</th>
+          <th>{{w_ochang[4]}}</th>
+          <th>{{w_ochang[5]}}</th>
+          <th>{{w_ochang[6]}}</th>
+          <th>{{w_ochang[7]}}</th>
+        </tr>
+        <tr>
+          <th>{{w_ochang_state[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_ochang_state[1]}}</th>
+          </div>
+          <th>{{w_ochang_state[2]}}</th>
+          <th>{{w_ochang_state[3]}}</th>
+          <th>{{w_ochang_state[4]}}</th>
+          <th>{{w_ochang_state[5]}}</th>
+          <th>{{w_ochang_state[6]}}</th>
+          <th>{{w_ochang_state[7]}}</th>
+        </tr>
+        <tr>
+          <th rowspan="2">내덕2동</th>
+          <th>{{w_naedeok[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_naedeok[1]}}</th>
+          </div>
+          <th>{{w_naedeok[2]}}</th>
+          <th>{{w_naedeok[3]}}</th>
+          <th>{{w_naedeok[4]}}</th>
+          <th>{{w_naedeok[5]}}</th>
+          <th>{{w_naedeok[6]}}</th>
+          <th>{{w_naedeok[7]}}</th>
+        </tr>
+        <tr>
+          <th>{{w_naedeok_state[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_naedeok_state[1]}}</th>
+          </div>
+          <th>{{w_naedeok_state[2]}}</th>
+          <th>{{w_naedeok_state[3]}}</th>
+          <th>{{w_naedeok_state[4]}}</th>
+          <th>{{w_naedeok_state[5]}}</th>
+          <th>{{w_naedeok_state[6]}}</th>
+          <th>{{w_naedeok_state[7]}}</th>
+        </tr>
+        <tr>
+          <th rowspan="2">내수</th>
+          <th>{{w_nesu[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_nesu[1]}}</th>
+          </div>
+
+          <th>{{w_nesu[2]}}</th>
+          <th>{{w_nesu[3]}}</th>
+          <th>{{w_nesu[4]}}</th>
+          <th>{{w_nesu[5]}}</th>
+          <th>{{w_nesu[6]}}</th>
+          <th>{{w_nesu[7]}}</th>
+        </tr>
+        <tr>
+          <th>{{w_nesu_state[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{w_nesu_state[1]}}</th>
+          </div>
+          <th>{{w_nesu_state[2]}}</th>
+          <th>{{w_nesu_state[3]}}</th>
+          <th>{{w_nesu_state[4]}}</th>
+          <th>{{w_nesu_state[5]}}</th>
+          <th>{{w_nesu_state[6]}}</th>
+          <th>{{w_nesu_state[7]}}</th>
+        </tr>
+        <tr>
+          <th>시간</th>
+          <th>{{time_city_txt[0]}}</th>
+          <div id="">
+              <th id = "nowtime">{{time_city_txt[1]}}</th>
+          </div>
+
+          <th>{{time_city_txt[2]}}</th>
+          <th>{{time_city_txt[3]}}</th>
+          <th>{{time_city_txt[4]}}</th>
+          <th>{{time_city_txt[5]}}</th>
+          <th>{{time_city_txt[6]}}</th>
+          <th>{{time_city_txt[7]}}</th>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

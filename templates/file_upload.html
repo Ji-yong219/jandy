@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>내 계정</title>
+	<link rel="icon" href="{{url_for('static', filename='css/image/icon.png')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/upload.css')}}">
+	<script type="text/javascript" src = "{{url_for('static',filename='js/upload.js')}}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+		var user_ok = '{{user_ok}}';
+		var user_id = '{{user_id}}';
+		var user_nick = '{{nick}}';
+		var user_name = '{{name}}';
+	</script>
+</head>
+<body>
+	<div id='logo' onclick=window.open('/','_self')></div>
+	
+	<div id='content'>
+	<article>
+		<div id='user_ok_yes'>
+			<h2>업로드 가능 확장자 : png, jpg, jpeg, gif</h2>
+
+			<table id="out_table">
+			<tr>
+
+			<td>
+			<div class = "box" ondrop="drop(event,this)" ondragover="allow_drop(event)">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<h3>단일 업로드</h3>
+					<p onclick="delete_file(this)">이곳에 파일을 끌어 놓으세요.</p>
+					<input type = "file" name = "file_sin" />
+					<input type="submit" value="업로드">
+				</form>
+			</div>
+			</td>
+
+			<td>
+			<div class = "box" ondrop="drop(event,this)" ondragover="allow_drop(event)">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<h3>다중 업로드</h3>
+					<p onclick="delete_file(this)">이곳에 파일을 끌어 놓으세요.</p>
+					<input type = "file" name = "file_mul" multiple/>
+					<input type="submit" value="업로드">
+				</form>
+			</div>
+			</td>
+
+			</tr>
+
+			<tr>
+
+			<td>
+			<div class = "box_view" ondrop="drop(event,this)" ondragover="allow_drop(event)">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<h3>미리보기 단일 업로드</h3>
+					<p onclick="delete_file(this)">이곳에 파일을 끌어 놓으세요/</p>
+					<input accept='image/*' type = "file" name = "file_sin"  />
+					<table id="inner_table">
+						<tr>
+							<th>미리보기</th>
+						</tr>
+					
+						<tr>
+							<td><img src="" id="view_preview" alt="Image preview..."></td>
+						</tr>
+					</table>
+					<input type="submit" value="업로드">
+				</form>
+			</div>
+			</td>
+
+			<td>
+			<div class = "box_view">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<h3>목록 다중 업로드 (보류)</h3>
+					<input multiple type = "file" name = "file_mul"  />
+					<table id="inner_table">
+						<tr>
+							<th>파일 이름 : </th>
+						</tr>
+					</table>
+					<input type="submit" value="업로드">
+				</form>
+			</div>
+			</td>
+			</tr>
+
+			<tr>
+				
+			<td>
+			<div class = "box_view" ondrop="drop(event,this)" ondragover="allow_drop(event)">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<h3>DB 미리보기 단일 업로드</h3>
+					<p onclick="delete_file(this)">이곳에 파일을 끌어 놓으세요.</p>
+					<input accept='image/*' type = "file" name = "file_sin_db"  />
+					<table id="inner_table">
+						<tr>
+							<th>미리보기</th>
+						</tr>
+					
+						<tr>
+							<td><img src="" id="view_preview" alt="Image preview..."></td>
+						</tr>
+					</table>
+					<input type="submit" value="업로드">
+				</form>
+			</div>
+			</td>
+
+			</tr>
+
+			</table>
+		</div>
+
+	</article>
+	</div>
+
+	<div id='under_bar'>
+		<div id="logo_bot" onclick=window.open("/","_self")></div>
+		<span id="text_bot">copyright ⓒ Ji-Yong Park & Yoon-su Lim All Right Reserved</span>
+	</div>
+</body>
+</html>

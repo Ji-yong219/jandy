@@ -1,0 +1,128 @@
+a{
+  text-decoration: none;
+  color:black;
+}
+#content{
+	text-align:center;
+}
+article{
+	width:800px;
+ 	position:relative;
+  	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+}
+#out_table{
+	margin:auto;
+}
+#inner_table{
+	width:280px;
+	margin:auto;
+}
+#inner_table th{
+	width:80px;
+}
+.box{
+	position:relative;
+	width:300px;
+	height:150px;
+	margin:3px; auto;
+	border:2px solid black;
+}
+.box_view{
+	position:relative;
+	width:300px;
+	height:350px;
+	margin:3px auto;
+	border:2px solid black;
+}
+.box p{
+	cursor:Pointer;
+}
+.box_view p{
+	cursor:Pointer;
+}
+img{
+	width:auto;
+	height:80px;
+	repeat:no-repeat;
+}
+#error{
+	color:red;
+	font-size:20px;
+}
+#under_bar{
+	text-align:center;
+	width:500px;
+	height:100px;
+	margin-left:auto;
+	margin-right:auto;
+	padding:10px;
+	top:20px;
+}
+#logo{
+	background-repeat:no-repeat;
+	background-image: url('./image/registlogo.png');
+	width:300px;
+	height:80px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	background-position:center;
+	cursor:Pointer;
+}
+#logo_bot{
+	margin-top:30px;
+	height:40px;
+	background-size:contain;
+	background-repeat:no-repeat;
+	background-image: url('./image/logo.png');
+	margin-left:auto;
+	margin-right:auto;
+	background-position:center;
+	cursor:Pointer;
+}
+input[type=file]{
+	height:0;
+	margin:auto;
+	outline:none;
+	opacity:0;
+}
+input[type=submit]{
+	position:absolute;
+	bottom:10px;
+	left:0;
+	right:0;
+	margin:auto;
+	width:250px;
+	height:40px;
+	background:#1a73e8;
+	color:white;
+	font-size:24px;
+	font-family:"맑은 고딕";
+	cursor:pointer;
+}
+input[type=text]{
+	width:160px;
+	height:30px;
+	font-size:16px;
+	text-align:center;
+	margin-top:10px;
+}
+input[type=password]{
+	width:160px;
+	height:30px;
+	margin-top:10px;
+}
+#text_bot{
+	margin-top:5px;
+	display:block;
+	clear:both;
+	margin-left:auto;
+	margin-right:auto;
+	font-size:14px;
+}
+h3{
+	margin:5px auto;
+}
