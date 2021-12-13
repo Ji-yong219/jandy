@@ -2,36 +2,41 @@
 #-*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from bs4 import BeautifulSoup
-from urllib.request import urlopen, Request
-from datetime import datetime
+from urllib.request import urlopen
 from werkzeug import secure_filename
 import urllib
 import bs4
 import pymysql
 import json
-import time, os, subprocess, requests
+import time, os
 from socket import *
 import threading
 
 global socket_data
 
-def connect_db():
-    database = pymysql.connect(host = 'xxx.xxx.xxx.xxx,
-                         port = 3306,
-                         user = 'root',
-                         passwd = 'xxxx',
-                         db = 'jandy',
-                         charset = 'utf8'
-                         )
+def connect_db(db_info):
+    database = pymysql.connect(
+        host    = db_info[0],
+        port    = int(db_info[1]),
+        user    = db_info[2],
+        passwd  = db_info[3],
+        db      = db_info[4],
+        charset = 'utf8'
+    )
     return database
 
-db = connect_db()
+db_info = []
+project_path = {os.getcwd()}
+with open('db_info', 'r', encoding='utf8') as f:
+    for row in f.readlines():
+        db_info.append(row.strip())
+
+db = connect_db(db_info)
 
 today = time.localtime()
 
-UPLOAD_FOLDER = 'D:/지용/python/workspace/flask/jandy/files'
-UPLOAD_FOLDER_DB = 'D:/지용/python/workspace/flask/jandy/static/user_img'
-#UPLOAD_FOLDER_DB = '/home/msdbtjd123/'
+UPLOAD_FOLDER = f'{project_path}\\files'
+UPLOAD_FOLDER_DB = f'{project_path}\\static\\user_img'
 
 ALLOWED_EXTENSIONS = set(['zip','jpg','jpeg','gif','png', 'PNG', 'JPG', 'JPEG', 'GIF'])
 
@@ -957,7 +962,7 @@ def install_page():
                     
             os.system("del return.output")
             '''
-            print("result 뭐옴?", result)
+            
             if result == 1:
             #if result[1] != "granted.":
                 login_stat = 10
@@ -1209,4 +1214,4 @@ def install_login():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host = 'xxx.xxx.xxx.xxx', port=xxxx)
+    app.run(host = '0.0.0.0', port=5003)
