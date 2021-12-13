@@ -1,16 +1,16 @@
 #_*_ coding: utf-8 _^_
 #-*- coding: utf-8 -*-
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 import urllib
-import bs4
 import pymysql
 import json
 import time, os
 from socket import *
 import threading
+import sqlite3
 
 global socket_data
 
@@ -25,13 +25,19 @@ def connect_db(db_info):
     )
     return database
 
-db_info = []
-project_path = {os.getcwd()}
-with open('db_info', 'r', encoding='utf8') as f:
-    for row in f.readlines():
-        db_info.append(row.strip())
+def connect_db_sqlite():
+    database = sqlite3.connect("jandy.db", isolation_level=None)
+    return database
 
-db = connect_db(db_info)
+project_path = {os.getcwd()}
+
+# db_info = []
+# with open('db_info', 'r', encoding='utf8') as f:
+#     for row in f.readlines():
+#         db_info.append(row.strip())
+
+# db = connect_db(db_info)
+db = connect_db_sqlite()
 
 today = time.localtime()
 
@@ -962,7 +968,7 @@ def install_page():
                     
             os.system("del return.output")
             '''
-            
+
             if result == 1:
             #if result[1] != "granted.":
                 login_stat = 10
@@ -1213,5 +1219,6 @@ def install_login():
 
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = True,
+    use_reloader=False
     app.run(host = '0.0.0.0', port=5003)
