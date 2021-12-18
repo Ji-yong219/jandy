@@ -26,7 +26,7 @@ def connect_db(db_info):
     return database
 
 def connect_db_sqlite():
-    database = sqlite3.connect("jandy.db", isolation_level=None)
+    database = sqlite3.connect("jandy.db", isolation_level=None, check_same_thread=False)
     return database
 
 project_path = {os.getcwd()}
@@ -58,56 +58,64 @@ def id_exist(user_id):
         return 0
     
     else:
-        db = connect_db()
+        db = connect_db_sqlite()
         try:
-            with db.cursor() as cursor:
-                id_result = 0
-                cursor.execute('select EXISTS(select id from users where id="%s") as success'%user_id)
-                id_result = cursor.fetchone()[0]
+            # with db.cursor() as cursor:
+            #     id_result = 0
+            #     cursor.execute(f'select EXISTS(select id from users where id="{user_id}") as success')
+            #     id_result = cursor.fetchone()[0]
+            cursor = db.cursor()
+            id_result = 0
+            cursor.execute(f'select EXISTS(select id from users where id="{user_id}") as success')
+            id_result = cursor.fetchone()[0]
         finally:
             pass
             
         return id_result
 
 def pw_chk(user_id, user_pw):
-    with db.cursor() as cursor:
-        result=0
+    # with db.cursor() as cursor:
+    cursor = db.cursor()
+    sql_qur = f'select pw from users where id="{user_id}"'
+    cursor.execute(sql_qur)
 
-        sql_qur = 'select pw,password("%s") from users where id=%s'
-        cursor.execute(sql_qur,(user_pw,user_id))
+    pw_list = cursor.fetchone()
+    db_pw = pw_list[0]
+    
+    db.commit()
 
-        pw_list = cursor.fetchone()
-        db_pw = pw_list[0]
-        user_pw = pw_list[1]
-
-        if user_pw == db_pw:
-            return 1
-        else:
-            return 0
+    if user_pw == db_pw:
+        return 1
+    else:
+        return 0
 
 def get_in_db(user_id, what):
     if len(user_id) < 6 :
         return 0
     
     else:
-        db = connect_db()
-        with db.cursor() as cursor:
-            db_result = 0
+        db = connect_db_sqlite()
+        db_result = None
 
-            if what == "nickname":
-                sql_qur = "select nickname from users where id=%s"
+        cursor = db.cursor()
+        db_result = 0
 
-            elif what == "password":
-                sql_qur = "select pw from users where id=%s"
+        if what == "nickname":
+            sql_qur = f"select nickname from users where id=\"{user_id}\""
 
-            elif what == "name":
-                sql_qur = "select name from users where id=%s"
+        elif what == "password":
+            sql_qur = f"select pw from users where id=\"{user_id}\""
 
-            elif what == "img":
-                sql_qur = "select img_name from users where id=%s"
+        elif what == "name":
+            sql_qur = f"select name from users where id=\"{user_id}\""
 
-            cursor.execute(sql_qur, user_id)
-            db_result = cursor.fetchone()[0]
+        elif what == "img":
+            sql_qur = f"select img_name from users where id=\"{user_id}\""
+
+        cursor.execute(sql_qur)
+        db_result = cursor.fetchone()[0]
+
+        db.commit()
 
         return db_result
 
@@ -199,18 +207,23 @@ def idchk_page():
 def regist_page():
 
     if request.method == 'POST':
-        db = connect_db()
+        db = connect_db_sqlite()
 
         nick = request.form['nick']
         user_id = request.form['id']
         user_pw = request.form['pw']
         user_name = request.form['name']
 
-        with db.cursor() as cursor:
-            sql_qur = 'INSERT INTO users (id,pw,nickname,name) VALUES (%s, PASSWORD("%s"), %s, %s)'
-            cursor.execute(sql_qur, (user_id, user_pw, nick, user_name))
+        # with db.cursor() as cursor:
+        #     sql_qur = 'INSERT INTO users (id,pw,nickname,name) VALUES (%s, PASSWORD("%s"), %s, %s)'
+        #     cursor.execute(sql_qur, (user_id, user_pw, nick, user_name))
 
-            db.commit()
+        #     db.commit()
+        cursor = db.cursor()
+        sql_qur = f'INSERT INTO users (id,pw,nickname,name) VALUES ("{user_id}", "{user_pw}", "{nick}", "{user_name}")'
+        cursor.execute(sql_qur)
+
+        db.commit()
 
         session['ss_user_id'] = user_id
         return "<script>alert('JANDY 회원가입이 완료되었습니다!');window.location.replace('/')</script>"+\
@@ -565,26 +578,28 @@ def cafe_page():
         return redirect(url_for('home_page'))
 
     if request.method=="GET":
-        db = connect_db()
+        db = connect_db_sqlite()
         pass
 
     if request.method=="POST":
-        db = connect_db()
+        db = connect_db_sqlite()
         post_list = []
         #print(request.form)
 
-        with db.cursor() as cursor:
-            cursor.execute('select max(idx) from post_test')
-            last = cursor.fetchall()[0][0]+1
+        cursor = db.cursor()
+        cursor.execute('select max(idx) from post')
+        last = cursor.fetchall()[0][0]
+        last = last+1 if last else 1
 
         if 'last' in request.form: #글 불러온거
             if request.form['last'] != 0:
                 last = request.form['last']
 
                 if last == "-1":
-                    with db.cursor() as cursor:
-                        cursor.execute('select max(idx) from post_test')
-                        last = cursor.fetchall()[0][0]+1
+                    cursor = db.cursor()
+                    cursor.execute('select max(idx) from post')
+                    last = cursor.fetchall()[0][0]
+                    last = last+1 if last else 1
 
         if 'title' in request.form: # 글 작성
             if 'title' != '':
@@ -594,19 +609,20 @@ def cafe_page():
                 #user_nick = get_in_db(session['ss_user_id'],'nickname')
                 #time = datetime.now().strftime("%Y년 %m월 %d일 %H:%M:%S".encode('unicode-escape').decode()).encode().decode('unicode-escape')
 
-                with db.cursor() as cursor:
-                    sql_qur = 'INSERT INTO post_test (title,contain,id,time) values (%s, %s, %s, now())'
-                    cursor.execute(sql_qur, (title, contain, user_id))
-                    db.commit()
+                cursor = db.cursor()
+                sql_qur = f'INSERT INTO post (title,contain,id,time) values ("{title}", "{contain}", "{user_id}", DATE(\'now\'))'
+                cursor.execute(sql_qur)
+                db.commit()
             return redirect('/cafe')
 
         if 'give_heart_user' in request.form:# 하트, 댓글 개수 전송
             post_idx = int(request.form['give_heart_user'])
             
-            with db.cursor() as cursor:
-                cursor.execute('select heart from post_test where idx=%d'%(post_idx))
-                heart_user_list = cursor.fetchone()[0]
-                heart_list = []
+            cursor = db.cursor()
+            cursor.execute('select heart from post_test where idx=%d'%(post_idx))
+            heart_user_list = cursor.fetchone()[0]
+            heart_list = []
+
             if heart_user_list != None:
                 heart_list = heart_user_list.split(",")
                 
@@ -616,29 +632,29 @@ def cafe_page():
             if request.form['heart'] != None:
                 heart_list = request.form['heart'].split(",")
 
-                with db.cursor() as cursor:
-                    post_idx = int(heart_list[1])
+                cursor = db.cursor()
+                post_idx = int(heart_list[1])
 
-                    cursor.execute('select heart from post_test where idx=%d'%(post_idx))
-                    heart_user_list = cursor.fetchone()[0]
-                    if heart_user_list == None: heart_user_list=[]
-                    else: heart_user_list = heart_user_list.split(",")
+                cursor.execute('select heart from post_test where idx=%d'%(post_idx))
+                heart_user_list = cursor.fetchone()[0]
+                if heart_user_list == None: heart_user_list=[]
+                else: heart_user_list = heart_user_list.split(",")
+                
+                if heart_list[0] == "off":
+                    heart_user_list.remove(session['ss_user_id'])
                     
-                    if heart_list[0] == "off":
-                        heart_user_list.remove(session['ss_user_id'])
-                        
-                        if heart_user_list == []: cursor.execute('update post_test set heart=NULL where idx=%d'%(post_idx))
-                        else:
-                            heart_user_str = ','.join(heart_user_list)
-                            cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str, post_idx))
-                    elif heart_list[0] == "on":
-                        heart_user_list.append(session['ss_user_id'])
-                        
+                    if heart_user_list == []: cursor.execute('update post_test set heart=NULL where idx=%d'%(post_idx))
+                    else:
                         heart_user_str = ','.join(heart_user_list)
-                        cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str,post_idx))
+                        cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str, post_idx))
+                elif heart_list[0] == "on":
+                    heart_user_list.append(session['ss_user_id'])
+                    
+                    heart_user_str = ','.join(heart_user_list)
+                    cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str,post_idx))
 
-                    heart_list = heart_user_list
-                    db.commit()
+                heart_list = heart_user_list
+                db.commit()
         
         if 'comment' in request.form: # 댓글 작성
             if 'comment' != '':
@@ -648,21 +664,21 @@ def cafe_page():
                 user_id = session['ss_user_id']
                 user_nick = get_in_db(session['ss_user_id'], 'nickname')
                 
-                with db.cursor() as cursor:
-                    sql_qur = 'INSERT INTO comment (id, contain, time) values (%s, %s, now())'
-                    cursor.execute(sql_qur, (user_id, contain))
-                    
-                    cursor.execute('select last_insert_id()')
-                    comments_idx = cursor.fetchone()[0]
-                    
-                    cursor.execute('select comment from post_test where idx=%s'%(post_idx))
-                    origin_idx = cursor.fetchone()[0]
-                    
-                    if origin_idx != None:
-                        comments_idx = str(origin_idx) + "," + str(comments_idx)
-                    
-                    cursor.execute('update post_test set comment="%s" where idx=%s'%(comments_idx, post_idx))
-                    db.commit()
+                cursor = db.cursor()
+                sql_qur = 'INSERT INTO comment (id, contain, time) values (%s, %s, now())'
+                cursor.execute(sql_qur, (user_id, contain))
+                
+                cursor.execute('select last_insert_id()')
+                comments_idx = cursor.fetchone()[0]
+                
+                cursor.execute('select comment from post_test where idx=%s'%(post_idx))
+                origin_idx = cursor.fetchone()[0]
+                
+                if origin_idx != None:
+                    comments_idx = str(origin_idx) + "," + str(comments_idx)
+                
+                cursor.execute('update post_test set comment="%s" where idx=%s'%(comments_idx, post_idx))
+                db.commit()
                 return jsonify(new_comment = comments_idx)
 
         if 're_comment' in request.form: # 답글 작성
@@ -821,36 +837,36 @@ def cafe_page():
             else:
                 return jsonify(comment_list = None)
             
-            with db.cursor() as cursor:
-                cursor.execute('select comment from comment where idx=%s'%(cmt_idx))
-                comment_idx = cursor.fetchone()[0]
-                re_comment_list = []
-                
-                if comment_idx is not None:
-                    comment_idx = comment_idx.split(",")
-                    for i in comment_idx:
-                        #cursor.execute('select * from comment where idx=%s'%(i))
-                        cursor.execute('select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx=%s'%(i))
-                        comment = list(cursor.fetchone())
-                        c = comment[2]
-                        comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
-                        + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
-                        re_comment_list.append(list(comment))
+            cursor = db.cursor()
+            cursor.execute('select comment from comment where idx=%s'%(cmt_idx))
+            comment_idx = cursor.fetchone()[0]
+            re_comment_list = []
+            
+            if comment_idx is not None:
+                comment_idx = comment_idx.split(",")
+                for i in comment_idx:
+                    #cursor.execute('select * from comment where idx=%s'%(i))
+                    cursor.execute('select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx=%s'%(i))
+                    comment = list(cursor.fetchone())
+                    c = comment[2]
+                    comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
+                    + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
+                    re_comment_list.append(list(comment))
                 
             return jsonify(re_comment_list = re_comment_list)
             
         else:#게시글 목록 가져오기
             if post_list == []:
-                with db.cursor() as cursor:
-                    cursor.execute('select p.*, u.nickname, u.img_name from post_test p join users u \
-                    on p.id=u.id where p.idx < %s order by p.idx desc limit 10' %(last))
-                    temp_list = cursor.fetchall()
+                cursor = db.cursor()
+                cursor.execute(f'select p.*, u.nickname, u.img_name from post p join users u \
+                on p.id=u.id where p.idx < {last} order by p.idx desc limit 10')
+                temp_list = cursor.fetchall()
 
-                    for t in temp_list:
-                        post_list.append(list(t))
+                for t in temp_list:
+                    post_list.append(list(t))
 
-                    if post_list == None:
-                        return jsonify(post = '0')
+                if post_list == None:
+                    return jsonify(post = '0')
 
             for i in range(len(post_list)):
                 temp_id = post_list[i][2]
