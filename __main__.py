@@ -589,7 +589,9 @@ def cafe_page():
         cursor = db.cursor()
         cursor.execute('select max(idx) from post')
         last = cursor.fetchall()[0][0]
+        print(f"last : {last}")
         last = last+1 if last else 1
+
 
         if 'last' in request.form: #글 불러온거
             if request.form['last'] != 0:
@@ -610,7 +612,7 @@ def cafe_page():
                 #time = datetime.now().strftime("%Y년 %m월 %d일 %H:%M:%S".encode('unicode-escape').decode()).encode().decode('unicode-escape')
 
                 cursor = db.cursor()
-                sql_qur = f'INSERT INTO post (title,contain,id,time) values ("{title}", "{contain}", "{user_id}", DATE(\'now\'))'
+                sql_qur = f'INSERT INTO post (title,contain,id,time) values ("{title}", "{contain}", "{user_id}", DATETIME(\'now\',\'localtime\'))'
                 cursor.execute(sql_qur)
                 db.commit()
             return redirect('/cafe')
@@ -869,11 +871,10 @@ def cafe_page():
                     return jsonify(post = '0')
 
             for i in range(len(post_list)):
-                temp_id = post_list[i][2]
-                post_list[i][3] = str(post_list[i][3].year) + "년 " \
-                + str(post_list[i][3].month) + "월 " + str(post_list[i][3].day)\
-                + "일 " + str(post_list[i][3].hour) + ":" + str("%02d"%post_list[i][3].minute)\
-                + ":" + str("%02d"%post_list[i][3].second)
+                print(f"post_list[i] : {post_list[i]}")
+                d = post_list[i][3].split(" ")[0].split("-")
+                t = post_list[i][3].split(" ")[1].split(":")
+                post_list[i][3] = f"{d[0]}년 {d[1]}월 {d[2]}일 {t[0]}:{t[1]}:{t[2]}"
                 
 
             return jsonify(post = post_list, last = last)
