@@ -110,8 +110,11 @@
                 
             if(post_list != 0){
                 post_now = post_list.shift();
+                console.log(`post_now : ${post_now}`);
+
                 last = post_now[4];
-                heart_list = String(post_now[6]).split(',');
+                heart_list = String(post_now[9]).split(',');
+                console.log(`heart_list : ${heart_list}`);
                 
                 let div = document.createElement("div"); // 박스
                 div.className = post_now[4];
@@ -127,15 +130,16 @@
                 let profile = document.createElement("img"); //프로필 사진
                 profile.className = "profile";
                 
-                if(post_now[8]==null){
-                    profile.src = "static/user_img/profileimage.png";
-                } else{
-                    profile.src = "static/user_img/"+post_now[8];
-                }
+                // if(post_now[9]==null){
+                //     profile.src = "static/user_img/profileimage.png";
+                // } else{
+                //     profile.src = `static/user_img/${post_now[9]}`;
+                // }
+                profile.src = `static/user_img/${post_now[9]}`;
                 div.appendChild(profile);
 
                 let nick = document.createElement("div"); //이름
-                nick.innerHTML=post_now[7];
+                nick.innerHTML=post_now[8];
                 nick.className = "post_nick";
                 div.appendChild(nick);
 
@@ -169,7 +173,7 @@
                 let heart = document.createElement("img"); //하트 개수 이미지
                 heart.src = "static/img/heart_on.png";
 
-                if (post_now[6] != null)
+                if (post_now[7] != null)
                     h_count.innerHTML=heart_list.length;
                 else{
                     h_count.innerHTML="";
@@ -229,7 +233,6 @@
                         data:`give_heart_user=${post_idx}`,
                         async:false,
                         success:function(data){
-                            console.log("하트"+data);
                             heart_list = data.heart_list;
                             if (heart_list == ""){
                                 $(h_count).children('.h_count').html("");

@@ -637,21 +637,26 @@ def cafe_page():
 
                 cursor.execute(f'SELECT heart FROM post WHERE idx={post_idx}')
                 heart_user_list = cursor.fetchone()[0]
-                if heart_user_list == None: heart_user_list=[]
-                else: heart_user_list = heart_user_list.split(",")
+                if heart_user_list is None:
+                    heart_user_list = []
+                else:
+                    heart_user_list = heart_user_list.split(",")
                 
                 if heart_list[0] == "off":
                     heart_user_list.remove(session['ss_user_id'])
                     
-                    if heart_user_list == []: cursor.execute('update post set heart=NULL where idx=%d'%(post_idx))
+                    if heart_user_list == []:
+                        cursor.execute(f'update post set heart=NULL where idx={post_idx}')
                     else:
                         heart_user_str = ','.join(heart_user_list)
-                        cursor.execute('update post set heart="%s" where idx=%d'%(heart_user_str, post_idx))
+                        cursor.execute(f'update post set heart="{heart_user_str}" where idx={post_idx}')
+
                 elif heart_list[0] == "on":
                     heart_user_list.append(session['ss_user_id'])
+                    heart_user_list = list(set(heart_user_list))
                     
                     heart_user_str = ','.join(heart_user_list)
-                    cursor.execute('update post set heart="%s" where idx=%d'%(heart_user_str,post_idx))
+                    cursor.execute(f'update post set heart="{heart_user_str}" where idx={post_idx}')
 
                 heart_list = heart_user_list
                 db.commit()
@@ -882,12 +887,13 @@ def cafe_page():
                 if post_list == None:
                     return jsonify(post = '0')
 
-            print(f"post_list : {post_list}")
             for i in range(len(post_list)):
                 d = post_list[i][3].split(" ")[0].split("-")
                 t = post_list[i][3].split(" ")[1].split(":")
                 post_list[i][3] = f"{d[0]}년 {d[1]}월 {d[2]}일 {t[0]}:{t[1]}:{t[2]}"
                 
+            for post in post_list:
+                print(f"post : {post}")
 
             return jsonify(post = post_list, last = last)
 
