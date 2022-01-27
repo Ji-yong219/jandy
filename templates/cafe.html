@@ -350,32 +350,30 @@
                                                 async:false,
                                                 success:function(data){
                                                     re_comment_list = JSON.parse(data).re_comment_list;
-
-                                                    console.log(`re_comment_list : ${re_comment_list}`);
                                                     
                                                     for(j = 0 ; j < re_comment_list.length ; j++){
-                                                        re_target_idx = re_comment_list[j][3];
-                                                        $('.cmt_window').children('.cmt_'+comment_list[i][3]).append('<div class=cmt_rep_'+re_target_idx+'></div>'); //답글 큰 박스
+                                                        let re_target_idx = re_comment_list[j][3];
+                                                        $('.cmt_window').children('.cmt_'+target_idx).append('<div class=cmt_rep_'+re_target_idx+'></div>'); //답글 큰 박스
 
                                                         if(re_comment_list[j][6] == null) //프로필사진없으면 기본사진, 있으면 프사 적용
-                                                            $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<img class="cmt_rep_profile" src=static/user_img/profileimage.png>'); //기본프사
+                                                            $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<img class="cmt_rep_profile" src=static/user_img/profileimage.png>'); //기본프사
                                                         else
-                                                            $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<img class="cmt_rep_profile" src=static/user_img/'+re_comment_list[j][6]+'>');//프사
+                                                            $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<img class="cmt_rep_profile" src=static/user_img/'+re_comment_list[j][6]+'>');//프사
 
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<div class=comment_rep_'+re_target_idx+'></div>'); //답글 박스
-                                                        $('.'+post_idx+' .comment_rep_'+re_comment_list[j][3]).append('<text class=comment_writer>'+re_comment_list[j][5]+'</text>'); //답글 작성자
-                                                        $('.'+post_idx+' .comment_rep_'+re_comment_list[j][3]).append('<text class=comment_contain>'+re_comment_list[j][1]+'</text>'); //답글 내용
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<img class="reple_popup_ico" src=static/img/상세.png/>'); //답글 팝업
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).children('.reple_popup_ico').append('<div class="reple_popup_div"></div>'); //답글 팝업창
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_modi">수정</text>'); //답글 수정
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_del">삭제</text>'); //답글 삭제
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_cancel">취소</text>'); //답글 팝업 취소
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<div></div>'); //빈 칸
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<text class="reple_like">좋아요 · </text>'); //댓글 좋아요
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<text class="reple_btn">답글 달기 · </text>'); //답글 달기
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<text class="reple_date">'+ re_comment_list[j][2] +'</text>'); //댓글 날짜
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<text class="reple_idx">'+re_target_idx+'</text>'); //댓글 idx
-                                                        $('.cmt_'+comment_list[i][3]).children('.cmt_rep_'+re_target_idx).append('<text class="reple_parent">'+comment_list[i][3]+'</text>'); //부모 댓글 여부
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<div class=comment_rep_'+re_target_idx+'></div>'); //답글 박스
+                                                        $('.'+post_idx+' .comment_rep_'+re_target_idx).append('<text class=comment_writer>'+re_comment_list[j][5]+'</text>'); //답글 작성자
+                                                        $('.'+post_idx+' .comment_rep_'+re_target_idx).append('<text class=comment_contain>'+re_comment_list[j][1]+'</text>'); //답글 내용
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<img class="reple_popup_ico" src=static/img/상세.png/>'); //답글 팝업
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).children('.reple_popup_ico').append('<div class="reple_popup_div"></div>'); //답글 팝업창
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_modi">수정</text>'); //답글 수정
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_del">삭제</text>'); //답글 삭제
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).children('.reple_popup_div').append('<text class="reple_cancel">취소</text>'); //답글 팝업 취소
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<div></div>'); //빈 칸
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<text class="reple_like">좋아요 · </text>'); //댓글 좋아요
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<text class="reple_btn">답글 달기 · </text>'); //답글 달기
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<text class="reple_date">'+ re_comment_list[j][2] +'</text>'); //댓글 날짜
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<text class="reple_idx">'+re_target_idx+'</text>'); //댓글 idx
+                                                        $('.cmt_'+target_idx).children('.cmt_rep_'+re_target_idx).append('<text class="reple_parent">'+target_idx+'</text>'); //부모 댓글 여부
                                                     }
                                                 }
                                             })
