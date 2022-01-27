@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from werkzeug.utils import secure_filename
 import urllib
-import pymysql
+# import pymysql
 import json
 import time, os
 from socket import *
@@ -834,7 +834,7 @@ def cafe_page():
                     # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
                     comment_list.append(list(comment))
                 
-            return jsonify(comment_list = comment_list)
+            return jsonify(comment_list = json.dumps(comment_list))
             
         if 'get_re_comment' in request.form: #답글 목록 가져오기
             if request.form['get_re_comment'].isdigit():
@@ -864,7 +864,7 @@ def cafe_page():
                     # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
                     re_comment_list.append(list(comment))
                 
-            return jsonify(re_comment_list = re_comment_list)
+            return jsonify(re_comment_list = json.dumps(re_comment_list))
             
         else:#게시글 목록 가져오기
             if post_list == []:
