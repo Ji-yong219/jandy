@@ -1,11 +1,19 @@
 #_*_ coding: utf-8 _^_
 #-*- coding: utf-8 -*-
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    jsonify
+)
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from werkzeug.utils import secure_filename
 import urllib
-import pymysql
+# import pymysql
 import json
 import time, os
 from socket import *
@@ -44,7 +52,9 @@ today = time.localtime()
 UPLOAD_FOLDER = f'{project_path}\\files'
 UPLOAD_FOLDER_DB = f'{project_path}\\static\\user_img'
 
-ALLOWED_EXTENSIONS = set(['zip','jpg','jpeg','gif','png', 'PNG', 'JPG', 'JPEG', 'GIF'])
+ALLOWED_EXTENSIONS = set(
+    ['zip','jpg','jpeg','gif','png', 'PNG', 'JPG', 'JPEG', 'GIF']
+)
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -66,15 +76,22 @@ def id_exist(user_id):
             #     id_result = cursor.fetchone()[0]
             cursor = db.cursor()
             id_result = 0
-            cursor.execute(f'select EXISTS(select id from users where id="{user_id}") as success')
+            cursor.execute(
+                f'SELECT \
+                    EXISTS(\
+                        SELECT id\
+                        FROM users\
+                        WHERE id="{user_id}"\
+                    ) as success'
+            )
             id_result = cursor.fetchone()[0]
+
         finally:
             pass
             
         return id_result
 
 def pw_chk(user_id, user_pw):
-    # with db.cursor() as cursor:
     cursor = db.cursor()
     sql_qur = f'select pw from users where id="{user_id}"'
     cursor.execute(sql_qur)
