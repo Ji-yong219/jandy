@@ -619,7 +619,7 @@ def cafe_page():
             post_idx = int(request.form['give_heart_user'])
             
             cursor = db.cursor()
-            cursor.execute('select heart from post where idx=%d'%(post_idx))
+            cursor.execute(f'SELECT heart FROM post WHERE idx={post_idx}')
             heart_user_list = cursor.fetchone()[0]
             heart_list = []
 
@@ -635,7 +635,7 @@ def cafe_page():
                 cursor = db.cursor()
                 post_idx = int(heart_list[1])
 
-                cursor.execute('select heart from post where idx=%d'%(post_idx))
+                cursor.execute(f'SELECT heart FROM post WHERE idx={post_idx}')
                 heart_user_list = cursor.fetchone()[0]
                 if heart_user_list == None: heart_user_list=[]
                 else: heart_user_list = heart_user_list.split(",")
@@ -696,7 +696,6 @@ def cafe_page():
                                 "{contain}",\
                                 DATETIME(\'now\',\'localtime\')\
                             )'
-                print(f"sql_qur : {sql_qur}")
                 cursor.execute(sql_qur)
                 
                 cursor.execute('select last_insert_rowid()')

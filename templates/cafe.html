@@ -226,9 +226,10 @@
                         type:"POST",
                         url:"/cafe",
                         datatype:"json",
-                        data:"give_heart_user="+post_idx,
+                        data:`give_heart_user=${post_idx}`,
                         async:false,
                         success:function(data){
+                            console.log("하트"+data);
                             heart_list = data.heart_list;
                             if (heart_list == ""){
                                 $(h_count).children('.h_count').html("");
@@ -341,7 +342,6 @@
                                         $('.cmt_window').children(`.cmt_${target_idx}`).append('<text class="reple_parent">None</text>'); //부모 댓글 여부
 
                                         if(comment_list[i][4] != null){//답글 목록 생성
-                                            console.log(`comment_list[i] : ${comment_list[i]}`);
                                             $.ajax({ // 답글 목록 받아오기
                                                 type:"POST",
                                                 url:"/cafe",
@@ -352,7 +352,7 @@
                                                     re_comment_list = JSON.parse(data).re_comment_list;
                                                     
                                                     for(j = 0 ; j < re_comment_list.length ; j++){
-                                                        let re_target_idx = re_comment_list[j][3];
+                                                        let re_target_idx = re_comment_list[j][4];
                                                         $('.cmt_window').children(`.cmt_${target_idx}`).append(`<div class=cmt_rep_${re_target_idx}></div>`); //답글 큰 박스
 
                                                         if(re_comment_list[j][6] == null) //프로필사진없으면 기본사진, 있으면 프사 적용
