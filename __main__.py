@@ -690,7 +690,13 @@ def cafe_page():
                 user_nick = get_in_db(session['ss_user_id'], 'nickname')
                 
                 cursor = db.cursor()
-                sql_qur = f'INSERT INTO comment (id, contain, time) values ({user_id}, {contain}, DATETIME(\'now\',\'localtime\'))'
+                sql_qur = f'INSERT INTO comment (id, contain, time)\
+                            VALUES (\
+                                "{user_id}",\
+                                "{contain}",\
+                                DATETIME(\'now\',\'localtime\')\
+                            )'
+                print(f"sql_qur : {sql_qur}")
                 cursor.execute(sql_qur)
                 
                 cursor.execute('select last_insert_rowid()')
@@ -834,7 +840,7 @@ def cafe_page():
                     # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
                     comment_list.append(list(comment))
                 
-            return jsonify(comment_list = json.dumps(comment_list))
+            return jsonify(json.dumps({"comment_list":comment_list}))
             
         if 'get_re_comment' in request.form: #답글 목록 가져오기
             if request.form['get_re_comment'].isdigit():
@@ -846,7 +852,6 @@ def cafe_page():
             cursor.execute(f'select comment from comment where idx={cmt_idx}')
             comment_idx = cursor.fetchone()[0]
             re_comment_list = []
-            print(f"comment_idx : {comment_idx}")
             
             if comment_idx is not None:
                 comment_idx = comment_idx.split(",")
@@ -854,7 +859,6 @@ def cafe_page():
                     #cursor.execute('select * from comment where idx=%s'%(i))
                     cursor.execute('select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx=%s'%(i))
                     comment = list(cursor.fetchone())
-                    print(f"comment : {comment}")
                     c = comment[2]
                     
                     d = c.split(" ")[0].split("-")
@@ -864,7 +868,7 @@ def cafe_page():
                     # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
                     re_comment_list.append(list(comment))
                 
-            return jsonify(re_comment_list = json.dumps(re_comment_list))
+            return jsonify(json.dumps({"re_comment_list":re_comment_list}))
             
         else:#게시글 목록 가져오기
             if post_list == []:
