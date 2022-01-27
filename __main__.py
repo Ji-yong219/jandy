@@ -272,12 +272,12 @@ def account():
             else:
                 filename = None
 
-            with db.cursor() as cursor:
-                sql_qur = 'update users set pw=PASSWORD("%s"), nickname=%s, name=%s, img_name=%s where id=%s'
-                cursor.execute(sql_qur, (pw,nick,name,filename,user_id))
+            cursor = db.cursor()
+            sql_qur = 'update users set pw=PASSWORD("%s"), nickname=%s, name=%s, img_name=%s where id=%s'
+            cursor.execute(sql_qur, (pw,nick,name,filename,user_id))
 
-                db.commit()
-                return redirect('/')
+            db.commit()
+            return redirect('/')
 
     return render_template('account.html',user_ok='no')
 
@@ -289,21 +289,21 @@ def find_id():
         user_name = request.form['name']
         result_id = []
 
-        with db.cursor() as cursor:
-            sql_qur = 'select id from users where name=%s'
-            result_count = cursor.execute(sql_qur, (user_name))
+        cursor = db.cursor()
+        sql_qur = 'select id from users where name=%s'
+        result_count = cursor.execute(sql_qur, (user_name))
 
-            result_all = cursor.fetchall()
+        result_all = cursor.fetchall()
 
-            for i in range(result_count):
-                result_id.append(result_all[i][0])
+        for i in range(result_count):
+            result_id.append(result_all[i][0])
 
-            for i in range(len(result_id)):
-                temp = result_id[i]
+        for i in range(len(result_id)):
+            temp = result_id[i]
 
-                result_id[i] = temp[:1] + '***' + temp[4:]
+            result_id[i] = temp[:1] + '***' + temp[4:]
 
-            db.commit()
+        db.commit()
 
         return render_template('find_id.html', name_chk='yes',\
 user_name = user_name, result_id=result_id, result_count = result_count)
@@ -327,12 +327,12 @@ def find_pw():
             user_pw = request.form['pw']
             user_id = request.form['user_name']
 
-            with db.cursor() as cursor:
+            cursor = db.cursor()
 
-                sql_qur = 'update users set pw = password("%s") where id=%s'
-                cursor.execute(sql_qur, (user_pw, user_id))
+            sql_qur = 'update users set pw = password("%s") where id=%s'
+            cursor.execute(sql_qur, (user_pw, user_id))
 
-                db.commit()
+            db.commit()
 
             return redirect("/")
 
@@ -555,10 +555,10 @@ def upload():
                 elif file_path == "db":
                     files[i].save(os.path.join(app.config['UPLOAD_FOLDER_DB'], filename))
 
-                    with db.cursor() as cursor:
-                        sql_qur = 'update users set img_name=%s, img_url=%s where id="123456"'
-                        cursor.execute(sql_qur, (filename,"temp"))
-                        db.commit()
+                    cursor = db.cursor()
+                    sql_qur = 'update users set img_name=%s, img_url=%s where id="123456"'
+                    cursor.execute(sql_qur, (filename,"temp"))
+                    db.commit()
 
                 return render_template("file_upload.html") + \
 "<script>alert('파일이 성공적으로 업로드되었습니다.')</script>"
@@ -584,12 +584,10 @@ def cafe_page():
     if request.method=="POST":
         db = connect_db_sqlite()
         post_list = []
-        #print(request.form)
 
         cursor = db.cursor()
         cursor.execute('select max(idx) from post')
         last = cursor.fetchall()[0][0]
-        print(f"last : {last}")
         last = last+1 if last else 1
 
 
@@ -621,7 +619,7 @@ def cafe_page():
             post_idx = int(request.form['give_heart_user'])
             
             cursor = db.cursor()
-            cursor.execute('select heart from post_test where idx=%d'%(post_idx))
+            cursor.execute('select heart from post where idx=%d'%(post_idx))
             heart_user_list = cursor.fetchone()[0]
             heart_list = []
 
@@ -637,7 +635,7 @@ def cafe_page():
                 cursor = db.cursor()
                 post_idx = int(heart_list[1])
 
-                cursor.execute('select heart from post_test where idx=%d'%(post_idx))
+                cursor.execute('select heart from post where idx=%d'%(post_idx))
                 heart_user_list = cursor.fetchone()[0]
                 if heart_user_list == None: heart_user_list=[]
                 else: heart_user_list = heart_user_list.split(",")
@@ -645,15 +643,15 @@ def cafe_page():
                 if heart_list[0] == "off":
                     heart_user_list.remove(session['ss_user_id'])
                     
-                    if heart_user_list == []: cursor.execute('update post_test set heart=NULL where idx=%d'%(post_idx))
+                    if heart_user_list == []: cursor.execute('update post set heart=NULL where idx=%d'%(post_idx))
                     else:
                         heart_user_str = ','.join(heart_user_list)
-                        cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str, post_idx))
+                        cursor.execute('update post set heart="%s" where idx=%d'%(heart_user_str, post_idx))
                 elif heart_list[0] == "on":
                     heart_user_list.append(session['ss_user_id'])
                     
                     heart_user_str = ','.join(heart_user_list)
-                    cursor.execute('update post_test set heart="%s" where idx=%d'%(heart_user_str,post_idx))
+                    cursor.execute('update post set heart="%s" where idx=%d'%(heart_user_str,post_idx))
 
                 heart_list = heart_user_list
                 db.commit()
@@ -667,19 +665,19 @@ def cafe_page():
                 user_nick = get_in_db(session['ss_user_id'], 'nickname')
                 
                 cursor = db.cursor()
-                sql_qur = 'INSERT INTO comment (id, contain, time) values (%s, %s, now())'
-                cursor.execute(sql_qur, (user_id, contain))
+                sql_qur = f'INSERT INTO comment (id, contain, time) values ("{user_id}", "{contain}", DATETIME(\'now\',\'localtime\'))'
+                cursor.execute(sql_qur)
                 
-                cursor.execute('select last_insert_id()')
+                cursor.execute('select last_insert_rowid()')
                 comments_idx = cursor.fetchone()[0]
                 
-                cursor.execute('select comment from post_test where idx=%s'%(post_idx))
+                cursor.execute(f'select comment from post where idx={post_idx}')
                 origin_idx = cursor.fetchone()[0]
-                
+                print(f"origin_idx : {origin_idx}")
                 if origin_idx != None:
                     comments_idx = str(origin_idx) + "," + str(comments_idx)
-                
-                cursor.execute('update post_test set comment="%s" where idx=%s'%(comments_idx, post_idx))
+                print(f"comments_idx : {comments_idx}")
+                cursor.execute(f'update post set comment="{comments_idx}" where idx={post_idx}')
                 db.commit()
                 return jsonify(new_comment = comments_idx)
 
@@ -691,21 +689,21 @@ def cafe_page():
                 user_id = session['ss_user_id']
                 user_nick = get_in_db(session['ss_user_id'], 'nickname')
                 
-                with db.cursor() as cursor:
-                    sql_qur = 'INSERT INTO comment (id, contain, time) values (%s, %s, now())'
-                    cursor.execute(sql_qur, (user_id, contain))
-                    
-                    cursor.execute('select last_insert_id()')
-                    comments_idx = cursor.fetchone()[0]
-                    
-                    cursor.execute('select comment from comment where idx=%s'%(cmt_idx))
-                    origin_idx = cursor.fetchone()[0]
-                    
-                    if origin_idx != None:
-                        comments_idx = str(origin_idx) + "," + str(comments_idx)
-                    
-                    cursor.execute('update comment set comment="%s" where idx=%s'%(comments_idx, cmt_idx))
-                    db.commit()
+                cursor = db.cursor()
+                sql_qur = f'INSERT INTO comment (id, contain, time) values ({user_id}, {contain}, DATETIME(\'now\',\'localtime\'))'
+                cursor.execute(sql_qur)
+                
+                cursor.execute('select last_insert_rowid()')
+                comments_idx = cursor.fetchone()[0]
+                
+                cursor.execute('select comment from comment where idx=%s'%(cmt_idx))
+                origin_idx = cursor.fetchone()[0]
+                
+                if origin_idx != None:
+                    comments_idx = str(origin_idx) + "," + str(comments_idx)
+                
+                cursor.execute(f'update comment set comment="{comments_idx}" where idx={cmt_idx}')
+                db.commit()
                 return jsonify(new_comment = comments_idx)
 
         if 'idx_list_delete' in request.form: # 댓글 삭제
@@ -718,44 +716,43 @@ def cafe_page():
                 user_id = session['ss_user_id']
                 user_nick = get_in_db(session['ss_user_id'], 'nickname')
                 
-                with db.cursor() as cursor:
-                    
+                cursor = db.cursor()
+                cursor.execute('select comment from comment where idx=%s'%(self_idx))
+                children_idx = cursor.fetchone()[0]
+                
+                #이 부분은 댓글 자체를 DB에서 지우는 부분
+                if children_idx != None: #자신에게 답글이 달려있는 경우
                     cursor.execute('select comment from comment where idx=%s'%(self_idx))
-                    children_idx = cursor.fetchone()[0]
-                    
-                    #이 부분은 댓글 자체를 DB에서 지우는 부분
-                    if children_idx != None: #자신에게 답글이 달려있는 경우
-                        cursor.execute('select comment from comment where idx=%s'%(self_idx))
-                        children_idx = cursor.fetchone()[0].split(",")
+                    children_idx = cursor.fetchone()[0].split(",")
 
-                        for rec in children_idx:
-                            cursor.execute('delete from comment where idx=%s'%(rec))
+                    for rec in children_idx:
+                        cursor.execute('delete from comment where idx=%s'%(rec))
 
-                    cursor.execute('delete from comment where idx=%s'%(self_idx))
+                cursor.execute('delete from comment where idx=%s'%(self_idx))
 
 
-                    #이 부분은 게시글에서 댓글 목록 수정하는부분
-                    if parent_idx != "None": #답글인 경우
-                        cursor.execute('select comment from comment where idx=%s'%(parent_idx))
-                        children_idx = cursor.fetchone()[0].split(",")
-                        children_idx.remove(self_idx)
-                        children_idx = ",".join(children_idx)
-                        if children_idx == '':
-                            cursor.execute('update comment set comment=NULL where idx=%s'%(parent_idx))
-                        else:
-                            cursor.execute('update comment set comment="%s" where idx=%s'%(children_idx, parent_idx))
+                #이 부분은 게시글에서 댓글 목록 수정하는부분
+                if parent_idx != "None": #답글인 경우
+                    cursor.execute('select comment from comment where idx=%s'%(parent_idx))
+                    children_idx = cursor.fetchone()[0].split(",")
+                    children_idx.remove(self_idx)
+                    children_idx = ",".join(children_idx)
+                    if children_idx == '':
+                        cursor.execute('update comment set comment=NULL where idx=%s'%(parent_idx))
+                    else:
+                        cursor.execute('update comment set comment="%s" where idx=%s'%(children_idx, parent_idx))
 
-                    elif parent_idx == "None": #댓글인 경우
-                        cursor.execute('select comment from post_test where idx=%s'%(post_idx))
-                        children_idx = cursor.fetchone()[0].split(",")
-                        children_idx.remove(self_idx)
-                        children_idx = ",".join(children_idx)
-                        if children_idx == '':
-                            cursor.execute('update post_test set comment=NULL where idx=%s'%(post_idx))
-                        else:
-                            cursor.execute('update post_test set comment="%s" where idx=%s'%(children_idx, post_idx))
-                    
-                    db.commit()
+                elif parent_idx == "None": #댓글인 경우
+                    cursor.execute('select comment from post where idx=%s'%(post_idx))
+                    children_idx = cursor.fetchone()[0].split(",")
+                    children_idx.remove(self_idx)
+                    children_idx = ",".join(children_idx)
+                    if children_idx == '':
+                        cursor.execute('update post set comment=NULL where idx=%s'%(post_idx))
+                    else:
+                        cursor.execute('update post set comment="%s" where idx=%s'%(children_idx, post_idx))
+                
+                db.commit()
                 
                 return jsonify(None)
 
@@ -797,14 +794,14 @@ def cafe_page():
                             cursor.execute('update comment set comment="%s" where idx=%s'%(children_idx, parent_idx))
 
                     elif parent_idx == "None": #댓글인 경우
-                        cursor.execute('select comment from post_test where idx=%s'%(post_idx))
+                        cursor.execute('select comment from post where idx=%s'%(post_idx))
                         children_idx = cursor.fetchone()[0].split(",")
                         children_idx.remove(self_idx)
                         children_idx = ",".join(children_idx)
                         if children_idx == '':
-                            cursor.execute('update post_test set comment=NULL where idx=%s'%(post_idx))
+                            cursor.execute('update post set comment=NULL where idx=%s'%(post_idx))
                         else:
-                            cursor.execute('update post_test set comment="%s" where idx=%s'%(children_idx, post_idx))
+                            cursor.execute('update post set comment="%s" where idx=%s'%(children_idx, post_idx))
                     
                     db.commit()
                 '''
@@ -816,20 +813,26 @@ def cafe_page():
             else:
                 return jsonify(comment_list = None)
             
-            with db.cursor() as cursor:
-                cursor.execute('select comment from post_test where idx=%s'%(post_idx))
-                comment_idx = cursor.fetchone()[0]
-                comment_list = []
-                
-                if comment_idx is not None:
-                    comment_idx = comment_idx.split(",")
-                    for i in comment_idx:
-                        cursor.execute('select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx=%s'%(i))
-                        comment = list( cursor.fetchone() )
-                        c = comment[2]
-                        comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
-                        + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
-                        comment_list.append(list(comment))
+            cursor = db.cursor()
+            cursor.execute(f'select comment from post where idx={post_idx}')
+            comment_idx = cursor.fetchone()
+            comment_idx = comment_idx[0]
+            comment_list = []
+            
+            if comment_idx is not None:
+                comment_idx = comment_idx.split(",")
+                for i in comment_idx:
+                    cursor.execute(f'select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx={i}')
+                    comment = cursor.fetchone()
+                    comment = list( comment )
+                    c = comment[2]
+                    
+                    d = c.split(" ")[0].split("-")
+                    t = c.split(" ")[1].split(":")
+                    comment[2] = f"{d[0]}년 {d[1]}월 {d[2]}일 {t[0]}:{t[1]}:{t[2]}"
+                    # comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
+                    # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
+                    comment_list.append(list(comment))
                 
             return jsonify(comment_list = comment_list)
             
@@ -840,9 +843,10 @@ def cafe_page():
                 return jsonify(comment_list = None)
             
             cursor = db.cursor()
-            cursor.execute('select comment from comment where idx=%s'%(cmt_idx))
+            cursor.execute(f'select comment from comment where idx={cmt_idx}')
             comment_idx = cursor.fetchone()[0]
             re_comment_list = []
+            print(f"comment_idx : {comment_idx}")
             
             if comment_idx is not None:
                 comment_idx = comment_idx.split(",")
@@ -850,9 +854,14 @@ def cafe_page():
                     #cursor.execute('select * from comment where idx=%s'%(i))
                     cursor.execute('select c.*, u.nickname, u.img_name from comment c join users u on c.id=u.id where idx=%s'%(i))
                     comment = list(cursor.fetchone())
+                    print(f"comment : {comment}")
                     c = comment[2]
-                    comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
-                    + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
+                    
+                    d = c.split(" ")[0].split("-")
+                    t = c.split(" ")[1].split(":")
+                    comment[2] = f"{d[0]}년 {d[1]}월 {d[2]}일 {t[0]}:{t[1]}:{t[2]}"
+                    # comment[2] = str(c.year) + "년 " + str(c.month) + "월 " + str(c.day)\
+                    # + "일 " + str(c.hour) + ":" + str("%02d"%c.minute)#+ ":" + str("%02d"%c.second)
                     re_comment_list.append(list(comment))
                 
             return jsonify(re_comment_list = re_comment_list)
@@ -870,8 +879,8 @@ def cafe_page():
                 if post_list == None:
                     return jsonify(post = '0')
 
+            print(f"post_list : {post_list}")
             for i in range(len(post_list)):
-                print(f"post_list[i] : {post_list[i]}")
                 d = post_list[i][3].split(" ")[0].split("-")
                 t = post_list[i][3].split(" ")[1].split(":")
                 post_list[i][3] = f"{d[0]}년 {d[1]}월 {d[2]}일 {t[0]}:{t[1]}:{t[2]}"
@@ -1237,5 +1246,8 @@ def install_login():
 
 if __name__ == "__main__":
     app.debug = True,
-    use_reloader=False
-    app.run(host = '0.0.0.0', port=5003)
+    app.run(
+        use_reloader=False,
+        host = 'localhost',
+        port=5003
+    )
